@@ -1,6 +1,6 @@
 import { useQueryState, parseAsString } from "nuqs";
 
-export function useAnimeFilters() {
+export const useAnimeFilters = () => {
   const [search, setSearch] = useQueryState(
     "search",
     parseAsString.withDefault("")
@@ -17,4 +17,6 @@ export function useAnimeFilters() {
     setSearch,
     setFormat,
   };
-}
+};
+
+export default useAnimeFilters;

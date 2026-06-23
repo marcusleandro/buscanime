@@ -1,6 +1,7 @@
 import { RouterProvider } from "react-router-dom";
 import { Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 import { ThemeProvider, Loader } from "@/components";
 import router from "@/router";
 
@@ -11,7 +12,9 @@ export const App = () => {
     <ThemeProvider storageKey="theme-buscanime">
       <QueryClientProvider client={queryClient}>
         <Suspense fallback={<Loader />}>
-          <RouterProvider router={router} />
+          <NuqsAdapter>
+            <RouterProvider router={router} />
+          </NuqsAdapter>
         </Suspense>
       </QueryClientProvider>
     </ThemeProvider>

@@ -32,3 +32,5 @@ build
 .env
 
 .cursor
+.agents
+skills-lock.json
