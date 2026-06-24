@@ -1,4 +1,7 @@
-import { useQueryState, parseAsString } from "nuqs";
+import { useQueryState, parseAsString, parseAsStringLiteral } from "nuqs";
+import { ANIME_FORMATS } from "@/types/anime/formats";
+
+const formatParser = parseAsStringLiteral(ANIME_FORMATS).withDefault("ALL");
 
 export const useAnimeFilters = () => {
   const [search, setSearch] = useQueryState(
@@ -6,10 +9,7 @@ export const useAnimeFilters = () => {
     parseAsString.withDefault("")
   );
 
-  const [format, setFormat] = useQueryState(
-    "format",
-    parseAsString.withDefault("ALL")
-  );
+  const [format, setFormat] = useQueryState("format", formatParser);
 
   return {
     search,

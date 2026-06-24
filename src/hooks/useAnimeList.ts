@@ -1,9 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import animeService from "@/services/AnimeService";
+import type { AnimeFormat } from "@/types";
 
 interface UseAnimeListProps {
   search: string;
-  format: string;
+  format: AnimeFormat;
 }
 
 export const useAnimeList = ({ search, format }: UseAnimeListProps) => {
@@ -22,7 +23,11 @@ export const useAnimeList = ({ search, format }: UseAnimeListProps) => {
     getNextPageParam: (lastPage) => {
       const pageInfo = lastPage.pageInfo;
 
-      return pageInfo.hasNextPage ? pageInfo.currentPage + 1 : undefined;
+      if (!pageInfo?.hasNextPage || pageInfo.currentPage == null) {
+        return undefined;
+      }
+
+      return pageInfo.currentPage + 1;
     },
   });
 };

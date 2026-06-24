@@ -1,4 +1,14 @@
 import { GraphQLClient, gql } from "graphql-request";
+import type {
+  GetAnimesQuery,
+  GetAnimesQueryVariables,
+  MediaFormat,
+} from "@/types/generated/graphql";
+
+export type AnimeListPage = NonNullable<GetAnimesQuery["Page"]>;
+export type AnimeMedia = NonNullable<
+  NonNullable<AnimeListPage["media"]>[number]
+>;
 
 export interface GetAnimeListParams {
   page: number;
@@ -49,15 +59,22 @@ export class AnimeService {
     perPage = 12,
     search,
     format,
-  }: GetAnimeListParams) {
-    const data = await this.api.request(GET_ANIMES, {
+  }: GetAnimeListParams): Promise<AnimeListPage> {
+    const variables: GetAnimesQueryVariables = {
       page,
       perPage,
       search: search || undefined,
-      format: format === "ALL" ? undefined : format,
-    });
+      format: format === "ALL" || !format ? undefined : (format as MediaFormat),
+    };
 
-    //console.log("data: ", data);
+    const data = await this.api.request<
+      GetAnimesQuery,
+      GetAnimesQueryVariables
+    >(GET_ANIMES, variables);
+
+    if (!data.Page) {
+      throw new Error("Failed to fetch anime list");
+    }
 
     return data.Page;
   }

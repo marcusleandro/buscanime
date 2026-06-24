@@ -5,7 +5,14 @@ import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 import { ThemeProvider, Loader } from "@/components";
 import router from "@/router";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      retry: 1,
+    },
+  },
+});
 
 export const App = () => {
   return (
