@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
-import type { AnimeMedia } from "@/services/AnimeService";
+import type { AnimeMedia } from "@/services/anime";
 import { AnimeCard } from "./AnimeCard";
 
 const mockAnime: AnimeMedia = {
@@ -12,9 +13,16 @@ const mockAnime: AnimeMedia = {
   genres: ["Action", "Adventure"],
 };
 
+const renderCard = (anime: AnimeMedia = mockAnime) =>
+  render(
+    <MemoryRouter>
+      <AnimeCard anime={anime} />
+    </MemoryRouter>
+  );
+
 describe("AnimeCard", () => {
   it("renders title, score and genre chips", () => {
-    render(<AnimeCard anime={mockAnime} />);
+    renderCard();
 
     expect(screen.getByText("One Piece")).toBeInTheDocument();
     expect(screen.getByText("85%")).toBeInTheDocument();
@@ -23,10 +31,16 @@ describe("AnimeCard", () => {
   });
 
   it("renders N/A when score is null", () => {
-    render(
-      <AnimeCard anime={{ ...mockAnime, averageScore: null, format: null }} />
-    );
+    renderCard({ ...mockAnime, averageScore: null, format: null });
 
     expect(screen.getByText("N/A")).toBeInTheDocument();
+  });
+
+  it("links to the anime detail page", () => {
+    renderCard();
+
+    expect(
+      screen.getByRole("link", { name: "Ver detalhes de One Piece" })
+    ).toHaveAttribute("href", "/animes/1");
   });
 });

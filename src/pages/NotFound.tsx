@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components";
 
-export const NotFoundPage = () => {
+export const NotFound = () => {
   return (
     <div
       className={`flex min-h-screen items-center justify-center bg-primary text-primary-foreground`}
@@ -38,4 +38,4 @@ export const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage;
+export default NotFound;

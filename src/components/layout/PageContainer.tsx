@@ -9,18 +9,18 @@ interface PageContainerProps {
 
 export const PageContainer = ({ children, className }: PageContainerProps) => {
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <Header />
-      <div
+      <main
         className={cn(
-          "mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8",
+          "mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8",
           className
         )}
       >
         {children}
-      </div>
+      </main>
       <Footer />
-    </>
+    </div>
   );
 };
 

@@ -1,10 +1,12 @@
 import { PlusIcon } from "lucide-react";
-import type { AnimeMedia } from "@/services/AnimeService";
-import { AnimeGridSkeleton } from "@/components/anime/AnimeCardSkeleton";
-import { EmptyState } from "@/components/common/EmptyState";
-import { ErrorState } from "@/components/common/ErrorState";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+import type { AnimeMedia } from "@/services/anime";
+import {
+  AnimeGridSkeleton,
+  EmptyState,
+  ErrorState,
+  Button,
+  Spinner,
+} from "@/components";
 import { ANIME_GRID_CLASS } from "@/types/anime/formats";
 import { AnimeCard } from "./AnimeCard";
 

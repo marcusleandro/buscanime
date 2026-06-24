@@ -1,5 +1,4 @@
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, Skeleton } from "@/components";
 import {
   ANIME_GRID_CLASS,
   ANIME_GRID_SKELETON_COUNT,

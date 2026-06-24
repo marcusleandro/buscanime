@@ -6,7 +6,7 @@ import {
   PageContainer,
 } from "@/components";
 import { useAnimeFilters, useAnimeList, useDebounce } from "@/hooks";
-import type { AnimeMedia } from "@/services/AnimeService";
+import type { AnimeMedia } from "@/services/anime";
 
 export const AnimeListPage = () => {
   const { search, format, setSearch, setFormat } = useAnimeFilters();

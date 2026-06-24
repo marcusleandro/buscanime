@@ -2,7 +2,7 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   schema: "https://graphql.anilist.co",
-  documents: ["src/services/AnimeService.ts"],
+  documents: ["src/services/anime/AnimeQueries.ts"],
   generates: {
     "src/types/generated/anilist.schema.ts": {
       plugins: ["typescript"],

@@ -1,7 +1,17 @@
 import * as React from "react"
+import { flushSync } from "react-dom"
+import {
+  getViewportCenter,
+  runCircularThemeTransition,
+} from "@/lib/theme-toggle-animation"
 
 type Theme = "dark" | "light" | "system"
 type ResolvedTheme = "dark" | "light"
+
+type ThemeToggleOrigin = {
+  x: number
+  y: number
+}
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -12,7 +22,9 @@ type ThemeProviderProps = {
 
 type ThemeProviderState = {
   theme: Theme
+  resolvedTheme: ResolvedTheme
   setTheme: (theme: Theme) => void
+  toggleTheme: (origin?: ThemeToggleOrigin) => void
 }
 
 const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
@@ -36,6 +48,22 @@ function getSystemTheme(): ResolvedTheme {
   }
 
   return "light"
+}
+
+function resolveTheme(theme: Theme): ResolvedTheme {
+  return theme === "system" ? getSystemTheme() : theme
+}
+
+function getNextToggleTheme(currentTheme: Theme): ResolvedTheme {
+  if (currentTheme === "dark") {
+    return "light"
+  }
+
+  if (currentTheme === "light") {
+    return "dark"
+  }
+
+  return getSystemTheme() === "dark" ? "light" : "dark"
 }
 
 function disableTransitionsTemporarily() {
@@ -92,7 +120,31 @@ export function ThemeProvider({
     return defaultTheme
   })
 
-  const setTheme = React.useCallback(
+  const isAnimatedToggleRef = React.useRef(false)
+
+  const applyTheme = React.useCallback(
+    (nextTheme: Theme) => {
+      const root = document.documentElement
+      const resolvedTheme = resolveTheme(nextTheme)
+      const shouldDisableTransitions =
+        disableTransitionOnChange && !isAnimatedToggleRef.current
+      const restoreTransitions = shouldDisableTransitions
+        ? disableTransitionsTemporarily()
+        : null
+
+      root.classList.remove("light", "dark")
+      root.classList.add(resolvedTheme)
+
+      isAnimatedToggleRef.current = false
+
+      if (restoreTransitions) {
+        restoreTransitions()
+      }
+    },
+    [disableTransitionOnChange]
+  )
+
+  const commitTheme = React.useCallback(
     (nextTheme: Theme) => {
       localStorage.setItem(storageKey, nextTheme)
       setThemeState(nextTheme)
@@ -100,23 +152,33 @@ export function ThemeProvider({
     [storageKey]
   )
 
-  const applyTheme = React.useCallback(
+  const setTheme = React.useCallback(
     (nextTheme: Theme) => {
-      const root = document.documentElement
-      const resolvedTheme =
-        nextTheme === "system" ? getSystemTheme() : nextTheme
-      const restoreTransitions = disableTransitionOnChange
-        ? disableTransitionsTemporarily()
-        : null
-
-      root.classList.remove("light", "dark")
-      root.classList.add(resolvedTheme)
-
-      if (restoreTransitions) {
-        restoreTransitions()
-      }
+      commitTheme(nextTheme)
     },
-    [disableTransitionOnChange]
+    [commitTheme]
+  )
+
+  const toggleTheme = React.useCallback(
+    (origin?: ThemeToggleOrigin) => {
+      const nextTheme = getNextToggleTheme(theme)
+      const toggleOrigin = origin ?? getViewportCenter()
+
+      const updateTheme = () => {
+        isAnimatedToggleRef.current = true
+        flushSync(() => {
+          commitTheme(nextTheme)
+        })
+      }
+
+      if (origin === undefined && !document.startViewTransition) {
+        updateTheme()
+        return
+      }
+
+      runCircularThemeTransition(toggleOrigin, updateTheme)
+    },
+    [commitTheme, theme]
   )
 
   React.useEffect(() => {
@@ -144,11 +206,7 @@ export function ThemeProvider({
         return
       }
 
-      if (event.metaKey || event.ctrlKey || event.altKey) {
-        return
-      }
-
-      if (isEditableTarget(event.target)) {
+      if (!(event.ctrlKey || event.metaKey) || event.altKey) {
         return
       }
 
@@ -156,19 +214,12 @@ export function ThemeProvider({
         return
       }
 
-      setThemeState((currentTheme) => {
-        const nextTheme =
-          currentTheme === "dark"
-            ? "light"
-            : currentTheme === "light"
-              ? "dark"
-              : getSystemTheme() === "dark"
-                ? "light"
-                : "dark"
+      if (isEditableTarget(event.target)) {
+        return
+      }
 
-        localStorage.setItem(storageKey, nextTheme)
-        return nextTheme
-      })
+      event.preventDefault()
+      toggleTheme()
     }
 
     window.addEventListener("keydown", handleKeyDown)
@@ -176,7 +227,7 @@ export function ThemeProvider({
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [storageKey])
+  }, [toggleTheme])
 
   React.useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
@@ -203,12 +254,16 @@ export function ThemeProvider({
     }
   }, [defaultTheme, storageKey])
 
+  const resolvedTheme = resolveTheme(theme)
+
   const value = React.useMemo(
     () => ({
       theme,
+      resolvedTheme,
       setTheme,
+      toggleTheme,
     }),
-    [theme, setTheme]
+    [resolvedTheme, setTheme, theme, toggleTheme]
   )
 
   return (

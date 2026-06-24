@@ -1,3 +1,4 @@
 export * from "./Home";
 export * from "./AnimeList";
-export * from "./NotFoundPage";
+export * from "./AnimeDetail";
+export * from "./NotFound";

@@ -1,39 +1,52 @@
 import { lazy, createElement } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, data, Outlet } from "react-router-dom";
+import { RootErrorBoundary } from "@/components/common";
+import { isValidAnimeIdParam } from "@/utils/animeId";
 
 const Home = lazy(() => import("@/pages/Home"));
-const AnimeListPage = lazy(() => import("@/pages/AnimeList"));
-const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
+const AnimeList = lazy(() => import("@/pages/AnimeList"));
+const AnimeDetail = lazy(() => import("@/pages/AnimeDetail"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: createElement(Home),
-    errorElement: createElement(NotFoundPage), // Faz sentido ter um error element aqui com a pagina de not found?
-  },
-  {
-    path: "/animes",
-    element: createElement(AnimeListPage),
-  },
-  // {
-  //   path: "/animes",
-  //   element: createElement(Navigate, { to: "/", replace: true }),
-  // },
-  // {
-  //   path: "/animes/:id",
-  //   element: createElement(AnimeDetailPage),
-  // },
-  // {
-  //   path: "/animes/:id/episodes",
-  //   element: createElement(AnimeEpisodesPage),
-  // },
-  // {
-  //   path: "/animes/:id/reviews",
-  //   element: createElement(AnimeReviewsPage),
-  // },
-  {
-    path: "*",
-    element: createElement(NotFoundPage),
+    element: createElement(Outlet),
+    errorElement: createElement(RootErrorBoundary),
+    children: [
+      {
+        index: true,
+        element: createElement(Home),
+      },
+      {
+        path: "animes",
+        element: createElement(AnimeList),
+      },
+      {
+        path: "animes/:id",
+        loader: ({ params }) => {
+          if (!isValidAnimeIdParam(params.id)) {
+            throw data(null, { status: 404 });
+          }
+          return null;
+        },
+        element: createElement(AnimeDetail),
+      },
+      // TODO: Add episodes and reviews pages
+      // {
+      //   path: "animes/:id/episodes",
+      //   loader: ({ params }) => {
+      //     if (!isValidAnimeIdParam(params.id)) {
+      //       throw data(null, { status: 404 });
+      //     }
+      //     return null;
+      //   },
+      //   element: createElement(AnimeEpisodesPage),
+      // },
+      {
+        path: "*",
+        element: createElement(NotFound),
+      },
+    ],
   },
 ]);
 

@@ -1,4 +1,4 @@
-import { BrandLogo } from "@/components/BrandLogo";
+import { BrandLogo, ThemeToggle } from "@/components";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
@@ -9,11 +9,15 @@ export const Header = ({ className }: HeaderProps) => {
   return (
     <header
       className={cn(
-        "flex h-[68px] w-full items-center justify-center bg-primary",
+        "grid h-[68px] w-full grid-cols-[1fr_auto_1fr] items-center bg-primary px-4 sm:px-6",
         className
       )}
     >
+      <div aria-hidden />
       <BrandLogo size="header" asLink />
+      <div className="flex justify-end">
+        <ThemeToggle />
+      </div>
     </header>
   );
 };

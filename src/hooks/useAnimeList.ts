@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import animeService from "@/services/AnimeService";
+import animeService from "@/services/anime";
 import type { AnimeFormat } from "@/types";
 
 interface UseAnimeListProps {

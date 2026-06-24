@@ -4,8 +4,8 @@ import {
   AlertAction,
   AlertDescription,
   AlertTitle,
-} from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+  Button,
+} from "@/components";
 
 interface ErrorStateProps {
   title?: string;
