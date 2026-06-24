@@ -1,0 +1,33 @@
+name: "Quality checks"
+description: "Install dependencies and run lint, typecheck, and unit tests"
+
+inputs:
+  node-version:
+    description: "Node.js version to use"
+    required: false
+    default: "22"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: yarn
+
+    - name: Install dependencies
+      shell: bash
+      run: yarn install --frozen-lockfile
+
+    - name: Lint
+      shell: bash
+      run: yarn lint
+
+    - name: Typecheck
+      shell: bash
+      run: yarn typecheck
+
+    - name: Unit tests
+      shell: bash
+      run: yarn test

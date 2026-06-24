@@ -2,38 +2,81 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   quality:
+    name: Quality checks
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Quality checks
+        uses: ./.github/actions/quality
         with:
-          node-version: 20
-          cache: yarn
+          node-version: "22"
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Lint
-        run: yarn lint
+      - name: Build application
+        uses: ./.github/actions/build
+        with:
+          node-version: "22"
 
-      - name: Typecheck
-        run: yarn typecheck
+  e2e:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Unit tests
-        run: yarn test
-
-      - name: Build
-        run: yarn build
-
-      - name: Install Playwright browsers
-        run: npx playwright install chromium --with-deps
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
 
       - name: E2E tests
-        run: yarn test:e2e
+        uses: ./.github/actions/e2e
+        with:
+          node-version: "22"
+
+  # Runs only on push to main, after all checks pass.
+  # Enable by setting repository variable ENABLE_VERCEL_DEPLOY=true
+  # and secrets VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID.
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: [quality, build, e2e]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.ENABLE_VERCEL_DEPLOY == 'true'
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Deploy to Vercel
+        uses: ./.github/actions/deploy
+        with:
+          node-version: "22"
+          vercel-environment: production
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}

@@ -1,0 +1,44 @@
+name: "E2E tests"
+description: "Run Playwright tests against the production build served via vite preview"
+
+inputs:
+  node-version:
+    description: "Node.js version to use"
+    required: false
+    default: "22"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: yarn
+
+    - name: Install dependencies
+      shell: bash
+      run: yarn install --frozen-lockfile
+
+    - name: Cache Playwright browsers
+      uses: actions/cache@v4
+      id: playwright-cache
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+        restore-keys: |
+          playwright-${{ runner.os }}-
+
+    - name: Install Playwright (with system deps)
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: npx playwright install chromium --with-deps
+
+    - name: Install Playwright browsers
+      if: steps.playwright-cache.outputs.cache-hit == 'true'
+      shell: bash
+      run: npx playwright install chromium
+
+    - name: E2E tests
+      shell: bash
+      run: yarn test:e2e

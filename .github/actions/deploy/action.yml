@@ -1,0 +1,63 @@
+name: "Deploy to Vercel"
+description: "Deploy a prebuilt dist artifact to Vercel (reuses CI build output)"
+
+inputs:
+  node-version:
+    description: "Node.js version to use"
+    required: false
+    default: "22"
+  vercel-environment:
+    description: "Vercel environment (preview/production)"
+    required: false
+    default: "production"
+  vercel-token:
+    description: "Vercel API token"
+    required: true
+  vercel-org-id:
+    description: "Vercel organization ID"
+    required: true
+  vercel-project-id:
+    description: "Vercel project ID"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: yarn
+
+    - name: Install dependencies
+      shell: bash
+      run: yarn install --frozen-lockfile
+
+    - name: Pull Vercel Environment Information
+      shell: bash
+      env:
+        VERCEL_ORG_ID: ${{ inputs.vercel-org-id }}
+        VERCEL_PROJECT_ID: ${{ inputs.vercel-project-id }}
+      run: yarn vercel pull --yes --environment=${{ inputs.vercel-environment }} --token=${{ inputs.vercel-token }}
+
+    - name: Prepare prebuilt output
+      shell: bash
+      run: |
+        mkdir -p .vercel/output/static
+        cp -r dist/* .vercel/output/static/
+        cat > .vercel/output/config.json <<'EOF'
+        {
+          "version": 3,
+          "routes": [
+            { "handle": "filesystem" },
+            { "src": "/(.*)", "dest": "/index.html" }
+          ]
+        }
+        EOF
+
+    - name: Deploy to Vercel
+      shell: bash
+      env:
+        VERCEL_ORG_ID: ${{ inputs.vercel-org-id }}
+        VERCEL_PROJECT_ID: ${{ inputs.vercel-project-id }}
+      run: yarn vercel deploy --prebuilt --prod --token=${{ inputs.vercel-token }}
