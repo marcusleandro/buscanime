@@ -1,6 +1,8 @@
 import { PlusIcon } from "lucide-react";
 import type { AnimeReview } from "@/services/anime";
-import { Button, ErrorState, Spinner } from "@/components";
+import { Button } from "@/components/ui/button";
+import { ErrorState } from "@/components/common/ErrorState";
+import { Spinner } from "@/components/ui/spinner";
 import { ReviewCard } from "./ReviewCard";
 
 interface ReviewFeedProps {
@@ -11,9 +13,14 @@ interface ReviewFeedProps {
   hasNextPage: boolean;
   onLoadMore: () => void;
   onRetry: () => void;
+  /** `compact` hides full review bodies; `full` renders sanitized HTML. */
   variant?: "compact" | "full";
 }
 
+/**
+ * Paginated list of review cards with loading, error, empty, and
+ * infinite-scroll states.
+ */
 export const ReviewFeed = ({
   reviews,
   isLoading,

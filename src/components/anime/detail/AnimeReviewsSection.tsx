@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button, ReviewCard } from "@/components";
+import { Button } from "@/components/ui/button";
+import { ReviewCard } from "@/components/anime/reviews/ReviewCard";
 import { useAnimeReviewsPreview } from "@/hooks/useAnimeReviews";
 
 interface AnimeReviewsSectionProps {

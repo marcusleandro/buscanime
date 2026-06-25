@@ -1,8 +1,8 @@
-import { Spinner } from "@/components/ui";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Loader = () => {
   return (
-    <div className="flex justify-center items-center w-full min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen w-full items-center justify-center bg-background text-foreground">
       <Spinner className="size-16" />
     </div>
   );

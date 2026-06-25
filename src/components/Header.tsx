@@ -1,4 +1,5 @@
-import { BrandLogo, ThemeToggle } from "@/components";
+import { BrandLogo } from "@/components/BrandLogo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {

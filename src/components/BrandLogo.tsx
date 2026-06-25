@@ -3,10 +3,12 @@ import { cn } from "@/lib/utils";
 
 interface BrandLogoProps {
   size?: "header" | "footer";
+  /** When `true`, wraps the logo in a link to the home page. */
   asLink?: boolean;
   className?: string;
 }
 
+/** Buscanime wordmark used in the header and footer. */
 export const BrandLogo = ({
   size = "header",
   asLink = false,

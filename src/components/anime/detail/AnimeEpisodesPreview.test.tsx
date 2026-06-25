@@ -22,10 +22,14 @@ describe("AnimeEpisodesPreview", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("heading", { name: "Episódios" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Episódios" })
+    ).toBeInTheDocument();
     expect(screen.getByText(/220 episódios/)).toBeInTheDocument();
     expect(screen.getByText("Enter: Naruto Uzumaki!")).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Ver todos" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Ver todos" })
+    ).not.toBeInTheDocument();
   });
 
   it("renders numbered placeholders when streaming episodes are unavailable", () => {

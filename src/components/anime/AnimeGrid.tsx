@@ -1,12 +1,10 @@
 import { PlusIcon } from "lucide-react";
 import type { AnimeMedia } from "@/services/anime";
-import {
-  AnimeGridSkeleton,
-  EmptyState,
-  ErrorState,
-  Button,
-  Spinner,
-} from "@/components";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { ErrorState } from "@/components/common/ErrorState";
+import { EmptyState } from "@/components/common/EmptyState";
+import { AnimeGridSkeleton } from "./AnimeCardSkeleton";
 import { ANIME_GRID_CLASS } from "@/types/anime/formats";
 import { AnimeCard } from "./AnimeCard";
 
@@ -18,9 +16,14 @@ interface AnimeGridProps {
   hasNextPage: boolean;
   onLoadMore: () => void;
   onRetry: () => void;
+  /** Active search term shown in the empty state when no results are found. */
   search?: string;
 }
 
+/**
+ * Responsive grid of anime cards with loading, error, empty, and
+ * infinite-scroll "load more" states.
+ */
 export const AnimeGrid = ({
   animes,
   isLoading,

@@ -4,15 +4,21 @@ import {
   AlertAction,
   AlertDescription,
   AlertTitle,
-  Button,
-} from "@/components";
+} from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 interface ErrorStateProps {
   title?: string;
   message?: string;
+  /** When provided, renders a "Tentar novamente" action button. */
   onRetry?: () => void;
 }
 
+/**
+ * Destructive alert for recoverable fetch failures.
+ *
+ * Default copy targets the anime list; pass custom `title`/`message` for other pages.
+ */
 export const ErrorState = ({
   title = "Algo deu errado",
   message = "Não foi possível carregar os animes. Verifique sua conexão e tente novamente.",

@@ -11,7 +11,10 @@ export const AnimeDetailSynopsis = ({
   if (!description) {
     return (
       <section aria-labelledby="synopsis-heading">
-        <h2 id="synopsis-heading" className="mb-4 font-heading text-2xl font-bold">
+        <h2
+          id="synopsis-heading"
+          className="mb-4 font-heading text-2xl font-bold"
+        >
           Sinopse
         </h2>
         <p className="text-muted-foreground">Sinopse indisponível.</p>
@@ -21,11 +24,14 @@ export const AnimeDetailSynopsis = ({
 
   return (
     <section aria-labelledby="synopsis-heading">
-      <h2 id="synopsis-heading" className="mb-4 font-heading text-2xl font-bold">
+      <h2
+        id="synopsis-heading"
+        className="mb-4 font-heading text-2xl font-bold"
+      >
         Sinopse
       </h2>
       <div
-        className="max-w-none space-y-3 text-foreground leading-relaxed [&_br]:block [&_i]:text-muted-foreground [&_p]:text-sm [&_p]:leading-relaxed"
+        className="max-w-none space-y-3 leading-relaxed text-foreground [&_br]:block [&_i]:text-muted-foreground [&_p]:text-sm [&_p]:leading-relaxed"
         dangerouslySetInnerHTML={{ __html: sanitizeAnilistHtml(description) }}
       />
     </section>

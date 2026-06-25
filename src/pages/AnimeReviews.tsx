@@ -1,22 +1,19 @@
 import { useState } from "react";
 import { ArrowLeftIcon } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
-import {
-  Button,
-  ErrorState,
-  PageContainer,
-  ReviewFeed,
-  ReviewSortFilter,
-} from "@/components";
+import { Link, useLoaderData } from "react-router-dom";
+import { ReviewFeed, ReviewSortFilter } from "@/components/anime/reviews";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { Button } from "@/components/ui/button";
+import { ErrorState } from "@/components/common/ErrorState";
 import { useAnimeReviews } from "@/hooks";
 import { AnimeNotFoundError } from "@/services/anime";
 import type { AnimeReviewSort } from "@/types/anime/reviewSort";
 import { DEFAULT_REVIEW_SORT } from "@/types/anime/reviewSort";
-import { parseAnimeId } from "@/utils/animeId";
+import type { AnimeRouteLoaderData } from "@/utils/animeId";
 
+/** Full paginated reviews page for a single anime. */
 export const AnimeReviewsPage = () => {
-  const { id: idParam } = useParams<{ id: string }>();
-  const animeId = parseAnimeId(idParam)!;
+  const { animeId } = useLoaderData() as AnimeRouteLoaderData;
   const [sort, setSort] = useState<AnimeReviewSort>(DEFAULT_REVIEW_SORT);
 
   const {
@@ -30,16 +27,13 @@ export const AnimeReviewsPage = () => {
     refetch,
   } = useAnimeReviews({ animeId, sort });
 
-  const isNotFound =
-    error instanceof AnimeNotFoundError ||
-    (isError && error?.message.includes("not found"));
+  const isNotFound = error instanceof AnimeNotFoundError;
 
   const firstPage = data?.pages[0];
   const animeTitle = firstPage?.title ?? "Anime";
   const isReviewBlocked = firstPage?.isReviewBlocked ?? false;
 
-  const reviews =
-    data?.pages.flatMap((page) => page.reviews) ?? [];
+  const reviews = data?.pages.flatMap((page) => page.reviews) ?? [];
 
   return (
     <PageContainer>

@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import {
   AnimeDetailHero,
   AnimeDetailSkeleton,
@@ -7,22 +7,20 @@ import {
   AnimeEpisodesPreview,
   AnimeRelatedSection,
   AnimeReviewsSection,
-  Button,
-  ErrorState,
-  PageContainer,
-} from "@/components";
-import { useAnimeDetail } from "@/hooks";
+} from "@/components/anime/detail";
+import { Button } from "@/components/ui/button";
+import { ErrorState } from "@/components/common/ErrorState";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { useAnimeDetail } from "@/hooks/useAnimeDetail";
 import { AnimeNotFoundError } from "@/services/anime";
-import { parseAnimeId } from "@/utils/animeId";
+import type { AnimeRouteLoaderData } from "@/utils/animeId";
 
+/** Anime detail page with synopsis, reviews preview, episodes, and related media. */
 export const AnimeDetail = () => {
-  const { id: idParam } = useParams<{ id: string }>();
-  const animeId = parseAnimeId(idParam)!;
+  const { animeId } = useLoaderData() as AnimeRouteLoaderData;
   const { data, isLoading, isError, error, refetch } = useAnimeDetail(animeId);
 
-  const isNotFound =
-    error instanceof AnimeNotFoundError ||
-    (isError && error?.message.includes("not found"));
+  const isNotFound = error instanceof AnimeNotFoundError;
 
   return (
     <PageContainer>

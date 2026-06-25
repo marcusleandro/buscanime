@@ -1,5 +1,5 @@
 import { ExternalLinkIcon, PlayIcon } from "lucide-react";
-import { Card, CardTitle } from "@/components";
+import { Card, CardTitle } from "@/components/ui/card";
 import type { AnimeDetail } from "@/services/anime";
 import { formatDuration, formatEpisodeCount } from "@/utils/formatAnimeLabels";
 import { isSafeHttpUrl } from "@/utils/isSafeHttpUrl";

@@ -40,7 +40,9 @@ describe("AnimeReviewsSection", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("heading", { name: "Reviews" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Reviews" })
+    ).toBeInTheDocument();
     expect(screen.getByText("Review destaque")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Ver todos" })).toHaveAttribute(
       "href",
@@ -89,6 +91,8 @@ describe("AnimeReviewsSection", () => {
 
     render(<AnimeReviewsSection animeId={20} />);
 
-    expect(screen.queryByRole("link", { name: "Ver todos" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Ver todos" })
+    ).not.toBeInTheDocument();
   });
 });

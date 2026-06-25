@@ -1,9 +1,5 @@
-import {
-  FeaturedClassics,
-  HomeFeatures,
-  HomeHero,
-  PageContainer,
-} from "@/components";
+import { FeaturedClassics, HomeFeatures, HomeHero } from "@/components/home";
+import { PageContainer } from "@/components/layout/PageContainer";
 
 export const Home = () => {
   return (

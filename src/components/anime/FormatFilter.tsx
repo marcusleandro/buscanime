@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import {
   ANIME_FORMATS,
   FORMAT_LABELS,
+  isAnimeFormat,
   type AnimeFormat,
 } from "@/types/anime/formats";
 
@@ -21,13 +22,14 @@ const filterItemClassName = cn(
   "focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-0"
 );
 
+/** Single-select toggle group for filtering the anime list by media format. */
 export const FormatFilter = ({ value, onChange }: FormatFilterProps) => {
   return (
     <ToggleGroup
       type="single"
       value={value}
       onValueChange={(next) => {
-        if (next) onChange(next as AnimeFormat);
+        if (isAnimeFormat(next)) onChange(next);
       }}
       aria-label="Filtrar por formato"
       className="mx-auto flex w-fit max-w-full flex-wrap justify-center gap-[19px]"

@@ -1,11 +1,19 @@
-import type { MediaFormat, MediaRelation, MediaStatus } from "@/types/generated/graphql";
-import { FORMAT_LABELS } from "@/types/anime/formats";
+import type {
+  MediaFormat,
+  MediaRelation,
+  MediaSeason,
+  MediaStatus,
+} from "@/types/generated/graphql";
+import { FORMAT_LABELS, type MediaAnimeFormat } from "@/types/anime/formats";
 
-type FuzzyDate = {
-  year?: number | null;
-  month?: number | null;
-  day?: number | null;
-} | null | undefined;
+type FuzzyDate =
+  | {
+      year?: number | null;
+      month?: number | null;
+      day?: number | null;
+    }
+  | null
+  | undefined;
 
 const STATUS_LABELS: Record<MediaStatus, string> = {
   FINISHED: "Finalizado",
@@ -31,31 +39,39 @@ const RELATION_LABELS: Record<MediaRelation, string> = {
   CONTAINS: "Contém",
 };
 
-const SEASON_LABELS: Record<string, string> = {
+const SEASON_LABELS: Record<MediaSeason, string> = {
   WINTER: "Inverno",
   SPRING: "Primavera",
   SUMMER: "Verão",
   FALL: "Outono",
 };
 
-export const formatAnimeStatus = (status: MediaStatus | null | undefined) => {
+/** Localized label for an AniList media status, or `null` when missing. */
+export const formatAnimeStatus = (
+  status: MediaStatus | null | undefined
+): string | null => {
   if (!status) return null;
   return STATUS_LABELS[status] ?? status;
 };
 
+/** Localized label for a media relation type. Falls back to `"Relacionado"`. */
 export const formatRelationType = (
   relationType: MediaRelation | null | undefined
-) => {
+): string => {
   if (!relationType) return "Relacionado";
   return RELATION_LABELS[relationType] ?? relationType;
 };
 
-export const formatAnimeFormat = (format: MediaFormat | null | undefined) => {
+/** Localized label for an AniList media format, or `null` when missing. */
+export const formatAnimeFormat = (
+  format: MediaFormat | null | undefined
+): string | null => {
   if (!format) return null;
-  return FORMAT_LABELS[format as keyof typeof FORMAT_LABELS] ?? format;
+  return FORMAT_LABELS[format as MediaAnimeFormat] ?? format;
 };
 
-export const formatFuzzyDate = (date: FuzzyDate) => {
+/** Formats an AniList fuzzy date as `YYYY`, `YYYY/MM`, or `YYYY/MM/DD`. */
+export const formatFuzzyDate = (date: FuzzyDate): string | null => {
   if (!date?.year) return null;
   const parts: string[] = [String(date.year)];
   if (date.month) parts.push(String(date.month).padStart(2, "0"));
@@ -63,10 +79,11 @@ export const formatFuzzyDate = (date: FuzzyDate) => {
   return parts.join("/");
 };
 
+/** Formats a start/end fuzzy date range with an en-dash separator. */
 export const formatDateRange = (
   startDate: FuzzyDate,
   endDate: FuzzyDate
-) => {
+): string | null => {
   const start = formatFuzzyDate(startDate);
   const end = formatFuzzyDate(endDate);
 
@@ -74,22 +91,29 @@ export const formatDateRange = (
   return start ?? end;
 };
 
+/** Formats season and year (e.g. `"Primavera 2024"`), or the year alone. */
 export const formatSeasonYear = (
-  season: string | null | undefined,
+  season: MediaSeason | null | undefined,
   seasonYear: number | null | undefined
-) => {
+): string | null => {
   if (!seasonYear) return null;
   const seasonLabel = season ? SEASON_LABELS[season] : null;
   return seasonLabel ? `${seasonLabel} ${seasonYear}` : String(seasonYear);
 };
 
-export const formatEpisodeCount = (episodes: number | null | undefined) => {
+/** Localized episode count label. */
+export const formatEpisodeCount = (
+  episodes: number | null | undefined
+): string => {
   if (episodes == null) return "Episódios desconhecidos";
   if (episodes === 1) return "1 episódio";
   return `${episodes} episódios`;
 };
 
-export const formatDuration = (duration: number | null | undefined) => {
+/** Formats episode duration as `"N min/ep"`, or `null` when missing. */
+export const formatDuration = (
+  duration: number | null | undefined
+): string | null => {
   if (!duration) return null;
   return `${duration} min/ep`;
 };

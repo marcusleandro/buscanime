@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import { Badge, Card, CardTitle } from "@/components";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardTitle } from "@/components/ui/card";
 import type { AnimeMedia } from "@/services/anime";
 import { getScoreColor } from "@/utils/getScoreColor";
 import { cn } from "@/lib/utils";
 
 interface AnimeCardProps {
+  /** Anime media item from a list or related-media query. */
   anime: AnimeMedia;
 }
 
@@ -13,6 +15,7 @@ const MAX_GENRES = 3;
 const filledBadgeClass =
   "h-auto rounded px-2 py-0.5 font-normal text-on-filled";
 
+/** Card linking to the anime detail page with cover, genres, and score badge. */
 export const AnimeCard = ({ anime }: AnimeCardProps) => {
   const title = anime.title?.romaji ?? "Sem título";
   const coverUrl = anime.coverImage?.extraLarge;

@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import {
   REVIEW_SORT_LABELS,
   REVIEW_SORTS,
+  isAnimeReviewSort,
   type AnimeReviewSort,
 } from "@/types/anime/reviewSort";
 
@@ -21,13 +22,17 @@ const filterItemClassName = cn(
   "focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-0"
 );
 
-export const ReviewSortFilter = ({ value, onChange }: ReviewSortFilterProps) => {
+/** Single-select toggle group for sorting anime reviews. */
+export const ReviewSortFilter = ({
+  value,
+  onChange,
+}: ReviewSortFilterProps) => {
   return (
     <ToggleGroup
       type="single"
       value={value}
       onValueChange={(next) => {
-        if (next) onChange(next as AnimeReviewSort);
+        if (isAnimeReviewSort(next)) onChange(next);
       }}
       aria-label="Ordenar reviews"
       className="flex w-full max-w-full flex-wrap justify-start gap-3"

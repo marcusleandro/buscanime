@@ -2,6 +2,7 @@ import dragonBall from "@/assets/dragon_ball.jpg";
 import naruto from "@/assets/naruto.jpg";
 import onePiece from "@/assets/one_piece.jpg";
 
+/** Static featured titles with poster images and pre-filled search queries. */
 export const FEATURED_ANIMES = [
   {
     title: "Dragon Ball",
@@ -25,3 +26,6 @@ export const FEATURED_ANIMES = [
     rotate: 8,
   },
 ] as const;
+
+/** Featured classic anime shown on the home page poster stack. */
+export type FeaturedAnime = (typeof FEATURED_ANIMES)[number];

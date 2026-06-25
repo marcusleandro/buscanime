@@ -11,6 +11,7 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
+/** Controlled search input synced with the anime list filters. */
 export const SearchBar = ({
   value,
   onChange,

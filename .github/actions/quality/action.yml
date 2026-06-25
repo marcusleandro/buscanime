@@ -24,6 +24,10 @@ runs:
       shell: bash
       run: yarn lint
 
+    - name: Format check
+      shell: bash
+      run: yarn format:check
+
     - name: Typecheck
       shell: bash
       run: yarn typecheck

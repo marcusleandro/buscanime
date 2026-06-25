@@ -26,10 +26,9 @@ describe("ReviewCard", () => {
     expect(screen.getByText("Uma jornada ninja memorável")).toBeInTheDocument();
     expect(screen.getByText("92%")).toBeInTheDocument();
     expect(screen.getByText("140 pessoas acharam útil")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Ver no AniList/i })).toHaveAttribute(
-      "href",
-      "https://anilist.co/review/1"
-    );
+    expect(
+      screen.getByRole("link", { name: /Ver no AniList/i })
+    ).toHaveAttribute("href", "https://anilist.co/review/1");
   });
 
   it("renders full body in full variant", () => {

@@ -35,7 +35,10 @@ describe("formatAnimeLabels", () => {
   describe("formatDateRange", () => {
     it("formats start and end dates", () => {
       expect(
-        formatDateRange({ year: 2002, month: 10, day: 3 }, { year: 2007, month: 2, day: 8 })
+        formatDateRange(
+          { year: 2002, month: 10, day: 3 },
+          { year: 2007, month: 2, day: 8 }
+        )
       ).toBe("2002/10/03 – 2007/02/08");
     });
 

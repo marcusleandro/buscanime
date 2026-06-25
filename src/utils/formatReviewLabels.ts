@@ -1,4 +1,9 @@
-export const formatReviewDate = (timestamp: number) => {
+/**
+ * Formats a review timestamp as a relative date string in Portuguese.
+ *
+ * @param timestamp - Unix timestamp in **seconds** (AniList convention).
+ */
+export const formatReviewDate = (timestamp: number): string => {
   const date = new Date(timestamp * 1000);
   const now = Date.now();
   const diffMs = now - date.getTime();
@@ -17,9 +22,15 @@ export const formatReviewDate = (timestamp: number) => {
   return `há ${diffYears} anos`;
 };
 
+/**
+ * Formats the "useful rating" count shown on review cards.
+ *
+ * @param ratingAmount - Number of users who marked the review as useful.
+ * @returns Localized label, or `null` when the count is zero or missing.
+ */
 export const formatReviewRating = (
   ratingAmount: number | null | undefined
-) => {
+): string | null => {
   if (ratingAmount == null || ratingAmount <= 0) return null;
   if (ratingAmount === 1) return "1 pessoa achou útil";
   return `${ratingAmount} pessoas acharam útil`;

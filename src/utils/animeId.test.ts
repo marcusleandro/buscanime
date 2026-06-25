@@ -7,12 +7,9 @@ describe("animeId", () => {
       expect(isValidAnimeIdParam(id)).toBe(true);
     });
 
-    it.each(["asas", "0", "01", "1.5", "-1", ""])(
-      "rejects %s",
-      (id) => {
-        expect(isValidAnimeIdParam(id)).toBe(false);
-      }
-    );
+    it.each(["asas", "0", "01", "1.5", "-1", ""])("rejects %s", (id) => {
+      expect(isValidAnimeIdParam(id)).toBe(false);
+    });
 
     it("rejects undefined", () => {
       expect(isValidAnimeIdParam(undefined)).toBe(false);

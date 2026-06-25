@@ -1,6 +1,6 @@
 import { SearchIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components";
+import { Button } from "@/components/ui/button";
 import { PosterStack } from "./PosterStack";
 
 export const HomeHero = () => {

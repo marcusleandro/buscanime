@@ -1,5 +1,6 @@
 import { ExternalLinkIcon, ThumbsUpIcon, UserIcon } from "lucide-react";
-import { Badge, Card } from "@/components";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import type { AnimeReview } from "@/services/anime";
 import {
   formatReviewDate,
@@ -20,6 +21,7 @@ interface ReviewCardProps {
 const filledBadgeClass =
   "h-auto shrink-0 rounded px-2 py-0.5 text-sm font-semibold text-on-filled";
 
+/** Single community review with score badge, summary, and optional full body. */
 export const ReviewCard = ({
   review,
   variant = "compact",

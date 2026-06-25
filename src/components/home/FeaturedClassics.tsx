@@ -33,9 +33,7 @@ export const FeaturedClassics = () => {
                 <CardTitle className="text-xl font-bold text-white">
                   {anime.title}
                 </CardTitle>
-                <span className="mt-1 text-sm text-white/80">
-                  Ver na lista
-                </span>
+                <span className="mt-1 text-sm text-white/80">Ver na lista</span>
               </div>
             </Card>
           </Link>

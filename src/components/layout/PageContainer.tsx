@@ -1,12 +1,14 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { Header, Footer } from "@/components";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 interface PageContainerProps {
   children: ReactNode;
   className?: string;
 }
 
+/** Page shell with header, centered main content, and footer. */
 export const PageContainer = ({ children, className }: PageContainerProps) => {
   return (
     <div className="flex min-h-screen flex-col">

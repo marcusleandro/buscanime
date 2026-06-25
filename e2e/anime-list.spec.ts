@@ -6,9 +6,7 @@ test.describe("Anime list", () => {
   test("loads anime list page", async ({ page }) => {
     await page.goto(ANIME_LIST_PATH);
 
-    await expect(
-      page.getByRole("link", { name: /buscanime/i })
-    ).toBeVisible();
+    await expect(page.getByRole("link", { name: /buscanime/i })).toBeVisible();
     await expect(
       page.getByRole("searchbox", { name: "Buscar anime" })
     ).toBeVisible();
@@ -21,7 +19,9 @@ test.describe("Anime list", () => {
   test("filters by search term", async ({ page }) => {
     await page.goto(ANIME_LIST_PATH);
 
-    await page.getByRole("searchbox", { name: "Buscar anime" }).fill("One Piece");
+    await page
+      .getByRole("searchbox", { name: "Buscar anime" })
+      .fill("One Piece");
     await page.waitForURL(/search=One\+Piece|search=One%20Piece/);
 
     await expect(page.getByText("One Piece").first()).toBeVisible({
@@ -60,7 +60,10 @@ test.describe("Anime list", () => {
     const firstCard = page.locator('[data-slot="card"]').first();
     await expect(firstCard).toBeVisible({ timeout: 15_000 });
 
-    const cardTitle = await firstCard.locator("[data-slot='card-title']").first().textContent();
+    const cardTitle = await firstCard
+      .locator("[data-slot='card-title']")
+      .first()
+      .textContent();
     await firstCard.click();
 
     await expect(page).toHaveURL(/\/animes\/\d+/);

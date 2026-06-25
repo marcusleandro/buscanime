@@ -11,6 +11,7 @@ Cada card de anime deve exibir o `averageScore` seguindo a regra: Abaixo de 50, 
 Além disso, não esqueça de incluir instruções sobre como executar o seu projeto.
 
 O que vamos avaliar:
+
 - Se atende ao que foi pedido;
 - Uso dos padrões do React(Responsabilidade Única, Imutabilidade, Composição, Reatividade);
 - Organização dos componentes;
@@ -19,6 +20,7 @@ O que vamos avaliar:
 - Quantidade de bugs.
 
 Pontos extras:
+
 - Testes unitários;
 - Testes e2e;
 - Documentação;

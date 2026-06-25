@@ -1,5 +1,7 @@
 import { gql } from "graphql-request";
 
+/** GraphQL operations consumed by {@link AnimeService}. */
+
 export const GET_ANIMES = gql`
   query GetAnimes(
     $page: Int

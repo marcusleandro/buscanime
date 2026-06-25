@@ -32,7 +32,9 @@ export class AnimeListFetchError extends Error {
  * Thrown when the AniList API returns no `reviews` payload for a reviews request.
  */
 export class AnimeReviewsFetchError extends Error {
+  /** AniList media ID whose reviews failed to load. */
   readonly animeId: number;
+  /** Page number that failed to load. */
   readonly page: number;
 
   constructor(animeId: number, page: number) {

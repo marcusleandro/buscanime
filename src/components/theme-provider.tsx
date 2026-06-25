@@ -1,109 +1,112 @@
-import * as React from "react"
-import { flushSync } from "react-dom"
+import * as React from "react";
+import { flushSync } from "react-dom";
 import {
   getViewportCenter,
   runCircularThemeTransition,
-} from "@/lib/theme-toggle-animation"
+  type ThemeToggleOrigin,
+} from "@/lib/theme-toggle-animation";
 
-type Theme = "dark" | "light" | "system"
-type ResolvedTheme = "dark" | "light"
+/** User-selected theme preference stored in localStorage. */
+export type Theme = "dark" | "light" | "system";
 
-type ThemeToggleOrigin = {
-  x: number
-  y: number
-}
+/** Resolved theme applied to the document root. */
+export type ResolvedTheme = "dark" | "light";
 
 type ThemeProviderProps = {
-  children: React.ReactNode
-  defaultTheme?: Theme
-  storageKey?: string
-  disableTransitionOnChange?: boolean
-}
+  children: React.ReactNode;
+  defaultTheme?: Theme;
+  storageKey?: string;
+  disableTransitionOnChange?: boolean;
+};
 
 type ThemeProviderState = {
-  theme: Theme
-  resolvedTheme: ResolvedTheme
-  setTheme: (theme: Theme) => void
-  toggleTheme: (origin?: ThemeToggleOrigin) => void
-}
+  theme: Theme;
+  resolvedTheme: ResolvedTheme;
+  setTheme: (theme: Theme) => void;
+  toggleTheme: (origin?: ThemeToggleOrigin) => void;
+};
 
-const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
-const THEME_VALUES: Theme[] = ["dark", "light", "system"]
+const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)";
+const THEME_VALUES: Theme[] = ["dark", "light", "system"];
 
 const ThemeProviderContext = React.createContext<
   ThemeProviderState | undefined
->(undefined)
+>(undefined);
 
 function isTheme(value: string | null): value is Theme {
   if (value === null) {
-    return false
+    return false;
   }
 
-  return THEME_VALUES.includes(value as Theme)
+  return THEME_VALUES.includes(value as Theme);
 }
 
 function getSystemTheme(): ResolvedTheme {
   if (window.matchMedia(COLOR_SCHEME_QUERY).matches) {
-    return "dark"
+    return "dark";
   }
 
-  return "light"
+  return "light";
 }
 
 function resolveTheme(theme: Theme): ResolvedTheme {
-  return theme === "system" ? getSystemTheme() : theme
+  return theme === "system" ? getSystemTheme() : theme;
 }
 
 function getNextToggleTheme(currentTheme: Theme): ResolvedTheme {
   if (currentTheme === "dark") {
-    return "light"
+    return "light";
   }
 
   if (currentTheme === "light") {
-    return "dark"
+    return "dark";
   }
 
-  return getSystemTheme() === "dark" ? "light" : "dark"
+  return getSystemTheme() === "dark" ? "light" : "dark";
 }
 
 function disableTransitionsTemporarily() {
-  const style = document.createElement("style")
+  const style = document.createElement("style");
   style.appendChild(
     document.createTextNode(
       "*,*::before,*::after{-webkit-transition:none!important;transition:none!important}"
     )
-  )
-  document.head.appendChild(style)
+  );
+  document.head.appendChild(style);
 
   return () => {
-    window.getComputedStyle(document.body)
+    window.getComputedStyle(document.body);
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        style.remove()
-      })
-    })
-  }
+        style.remove();
+      });
+    });
+  };
 }
 
 function isEditableTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) {
-    return false
+    return false;
   }
 
   if (target.isContentEditable) {
-    return true
+    return true;
   }
 
   const editableParent = target.closest(
     "input, textarea, select, [contenteditable='true']"
-  )
+  );
   if (editableParent) {
-    return true
+    return true;
   }
 
-  return false
+  return false;
 }
 
+/**
+ * Provides theme state, persistence, keyboard shortcut (Ctrl/Cmd+D), and
+ * animated toggle transitions to descendant components.
+ */
 export function ThemeProvider({
   children,
   defaultTheme = "system",
@@ -112,149 +115,149 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setThemeState] = React.useState<Theme>(() => {
-    const storedTheme = localStorage.getItem(storageKey)
+    const storedTheme = localStorage.getItem(storageKey);
     if (isTheme(storedTheme)) {
-      return storedTheme
+      return storedTheme;
     }
 
-    return defaultTheme
-  })
+    return defaultTheme;
+  });
 
-  const isAnimatedToggleRef = React.useRef(false)
+  const isAnimatedToggleRef = React.useRef(false);
 
   const applyTheme = React.useCallback(
     (nextTheme: Theme) => {
-      const root = document.documentElement
-      const resolvedTheme = resolveTheme(nextTheme)
+      const root = document.documentElement;
+      const resolvedTheme = resolveTheme(nextTheme);
       const shouldDisableTransitions =
-        disableTransitionOnChange && !isAnimatedToggleRef.current
+        disableTransitionOnChange && !isAnimatedToggleRef.current;
       const restoreTransitions = shouldDisableTransitions
         ? disableTransitionsTemporarily()
-        : null
+        : null;
 
-      root.classList.remove("light", "dark")
-      root.classList.add(resolvedTheme)
+      root.classList.remove("light", "dark");
+      root.classList.add(resolvedTheme);
 
-      isAnimatedToggleRef.current = false
+      isAnimatedToggleRef.current = false;
 
       if (restoreTransitions) {
-        restoreTransitions()
+        restoreTransitions();
       }
     },
     [disableTransitionOnChange]
-  )
+  );
 
   const commitTheme = React.useCallback(
     (nextTheme: Theme) => {
-      localStorage.setItem(storageKey, nextTheme)
-      setThemeState(nextTheme)
+      localStorage.setItem(storageKey, nextTheme);
+      setThemeState(nextTheme);
     },
     [storageKey]
-  )
+  );
 
   const setTheme = React.useCallback(
     (nextTheme: Theme) => {
-      commitTheme(nextTheme)
+      commitTheme(nextTheme);
     },
     [commitTheme]
-  )
+  );
 
   const toggleTheme = React.useCallback(
     (origin?: ThemeToggleOrigin) => {
-      const nextTheme = getNextToggleTheme(theme)
-      const toggleOrigin = origin ?? getViewportCenter()
+      const nextTheme = getNextToggleTheme(theme);
+      const toggleOrigin = origin ?? getViewportCenter();
 
       const updateTheme = () => {
-        isAnimatedToggleRef.current = true
+        isAnimatedToggleRef.current = true;
         flushSync(() => {
-          commitTheme(nextTheme)
-        })
-      }
+          commitTheme(nextTheme);
+        });
+      };
 
       if (origin === undefined && !document.startViewTransition) {
-        updateTheme()
-        return
+        updateTheme();
+        return;
       }
 
-      runCircularThemeTransition(toggleOrigin, updateTheme)
+      runCircularThemeTransition(toggleOrigin, updateTheme);
     },
     [commitTheme, theme]
-  )
+  );
 
   React.useEffect(() => {
-    applyTheme(theme)
+    applyTheme(theme);
 
     if (theme !== "system") {
-      return undefined
+      return undefined;
     }
 
-    const mediaQuery = window.matchMedia(COLOR_SCHEME_QUERY)
+    const mediaQuery = window.matchMedia(COLOR_SCHEME_QUERY);
     const handleChange = () => {
-      applyTheme("system")
-    }
+      applyTheme("system");
+    };
 
-    mediaQuery.addEventListener("change", handleChange)
+    mediaQuery.addEventListener("change", handleChange);
 
     return () => {
-      mediaQuery.removeEventListener("change", handleChange)
-    }
-  }, [theme, applyTheme])
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, [theme, applyTheme]);
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.repeat) {
-        return
+        return;
       }
 
       if (!(event.ctrlKey || event.metaKey) || event.altKey) {
-        return
+        return;
       }
 
       if (event.key.toLowerCase() !== "d") {
-        return
+        return;
       }
 
       if (isEditableTarget(event.target)) {
-        return
+        return;
       }
 
-      event.preventDefault()
-      toggleTheme()
-    }
+      event.preventDefault();
+      toggleTheme();
+    };
 
-    window.addEventListener("keydown", handleKeyDown)
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [toggleTheme])
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [toggleTheme]);
 
   React.useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
       if (event.storageArea !== localStorage) {
-        return
+        return;
       }
 
       if (event.key !== storageKey) {
-        return
+        return;
       }
 
       if (isTheme(event.newValue)) {
-        setThemeState(event.newValue)
-        return
+        setThemeState(event.newValue);
+        return;
       }
 
-      setThemeState(defaultTheme)
-    }
+      setThemeState(defaultTheme);
+    };
 
-    window.addEventListener("storage", handleStorageChange)
+    window.addEventListener("storage", handleStorageChange);
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange)
-    }
-  }, [defaultTheme, storageKey])
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [defaultTheme, storageKey]);
 
-  const resolvedTheme = resolveTheme(theme)
+  const resolvedTheme = resolveTheme(theme);
 
   const value = React.useMemo(
     () => ({
@@ -264,21 +267,26 @@ export function ThemeProvider({
       toggleTheme,
     }),
     [resolvedTheme, setTheme, theme, toggleTheme]
-  )
+  );
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
       {children}
     </ThemeProviderContext.Provider>
-  )
+  );
 }
 
+/**
+ * Returns the current theme, resolved theme, and setters from {@link ThemeProvider}.
+ *
+ * @throws When used outside of a {@link ThemeProvider}.
+ */
 export const useTheme = () => {
-  const context = React.useContext(ThemeProviderContext)
+  const context = React.useContext(ThemeProviderContext);
 
   if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider")
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
 
-  return context
-}
+  return context;
+};

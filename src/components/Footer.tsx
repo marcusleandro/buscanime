@@ -1,4 +1,4 @@
-import { BrandLogo } from "@/components";
+import { BrandLogo } from "@/components/BrandLogo";
 import { cn } from "@/lib/utils";
 
 interface FooterProps {

@@ -1,5 +1,9 @@
 import { AnimeCard } from "@/components/anime/AnimeCard";
-import type { AnimeDetail, AnimeMedia, AnimeRelationEdge } from "@/services/anime";
+import type {
+  AnimeDetail,
+  AnimeMedia,
+  AnimeRelationEdge,
+} from "@/services/anime";
 import { ANIME_GRID_CLASS } from "@/types/anime/formats";
 
 interface AnimeRelatedSectionProps {

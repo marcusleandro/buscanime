@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  AnimeGrid,
-  FormatFilter,
-  SearchBar,
-  PageContainer,
-} from "@/components";
-import { useAnimeFilters, useAnimeList, useDebounce } from "@/hooks";
+import { AnimeGrid, FormatFilter, SearchBar } from "@/components/anime";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { useAnimeFilters } from "@/hooks/useAnimeFilters";
+import { useAnimeList } from "@/hooks/useAnimeList";
+import { useDebounce } from "@/hooks/useDebounce";
 import type { AnimeMedia } from "@/services/anime";
 
 export const AnimeListPage = () => {

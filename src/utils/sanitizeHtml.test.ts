@@ -8,7 +8,7 @@ describe("sanitizeAnilistHtml", () => {
   });
 
   it("strips script tags", () => {
-    expect(sanitizeAnilistHtml('<script>alert(1)</script><p>ok</p>')).toBe(
+    expect(sanitizeAnilistHtml("<script>alert(1)</script><p>ok</p>")).toBe(
       "<p>ok</p>"
     );
   });
@@ -18,7 +18,9 @@ describe("sanitizeAnilistHtml", () => {
   });
 
   it("removes javascript: links", () => {
-    const result = sanitizeAnilistHtml('<a href="javascript:alert(1)">click</a>');
+    const result = sanitizeAnilistHtml(
+      '<a href="javascript:alert(1)">click</a>'
+    );
     expect(result).not.toContain("javascript:");
   });
 

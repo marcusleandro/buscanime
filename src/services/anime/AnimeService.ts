@@ -16,6 +16,7 @@ import {
   AnimeReviewsFetchError,
 } from "./AnimeErrors";
 import { GET_ANIME, GET_ANIMES, GET_ANIME_REVIEWS } from "./AnimeQueries";
+import type { AnimeFormat } from "@/types/anime/formats";
 import type { AnimeReviewSort } from "@/types/anime/reviewSort";
 
 /** AniList `Page` payload returned by {@link AnimeService.getAnimes}. */
@@ -69,7 +70,7 @@ export interface GetAnimeListParams {
   /** Optional title search term forwarded to AniList. */
   search?: string;
   /** Media format filter. `"ALL"` is treated as no filter. */
-  format?: string;
+  format?: AnimeFormat;
 }
 
 /**
