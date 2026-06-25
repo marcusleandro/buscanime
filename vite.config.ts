@@ -11,4 +11,26 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "react-vendor",
+              test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+            },
+            {
+              name: "router-vendor",
+              test: /[\\/]node_modules[\\/](react-router|react-router-dom|@remix-run)[\\/]/,
+            },
+            {
+              name: "query-vendor",
+              test: /[\\/]node_modules[\\/]@tanstack[\\/]/,
+            },
+          ],
+        },
+      },
+    },
+  },
 });

@@ -27,3 +27,19 @@ export class AnimeListFetchError extends Error {
     this.page = page;
   }
 }
+
+/**
+ * Thrown when the AniList API returns no `reviews` payload for a reviews request.
+ */
+export class AnimeReviewsFetchError extends Error {
+  readonly animeId: number;
+  readonly page: number;
+
+  constructor(animeId: number, page: number) {
+    super(`Failed to fetch reviews for anime ${animeId} on page ${page}`);
+
+    this.name = "AnimeReviewsFetchError";
+    this.animeId = animeId;
+    this.page = page;
+  }
+}

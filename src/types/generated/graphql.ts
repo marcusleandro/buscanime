@@ -84,6 +84,19 @@ export type MediaType =
   /** Asian comic */
   | 'MANGA';
 
+/** Review sort enums */
+export type ReviewSort =
+  | 'CREATED_AT'
+  | 'CREATED_AT_DESC'
+  | 'ID'
+  | 'ID_DESC'
+  | 'RATING'
+  | 'RATING_DESC'
+  | 'SCORE'
+  | 'SCORE_DESC'
+  | 'UPDATED_AT'
+  | 'UPDATED_AT_DESC';
+
 export type GetAnimesQueryVariables = Exact<{
   page?: number | null | undefined;
   perPage?: number | null | undefined;
@@ -100,3 +113,13 @@ export type GetAnimeQueryVariables = Exact<{
 
 
 export type GetAnimeQuery = { Media: { id: number, description: string | null, bannerImage: string | null, format: MediaFormat | null, status: MediaStatus | null, episodes: number | null, duration: number | null, averageScore: number | null, genres: Array<string | null> | null, season: MediaSeason | null, seasonYear: number | null, title: { romaji: string | null, english: string | null, native: string | null } | null, coverImage: { extraLarge: string | null, color: string | null } | null, startDate: { year: number | null, month: number | null, day: number | null } | null, endDate: { year: number | null, month: number | null, day: number | null } | null, studios: { nodes: Array<{ name: string } | null> | null } | null, nextAiringEpisode: { episode: number, airingAt: number, timeUntilAiring: number } | null, relations: { edges: Array<{ relationType: MediaRelation | null, node: { id: number, type: MediaType | null, format: MediaFormat | null, averageScore: number | null, genres: Array<string | null> | null, title: { romaji: string | null } | null, coverImage: { extraLarge: string | null } | null } | null } | null> | null } | null, streamingEpisodes: Array<{ title: string | null, site: string | null, thumbnail: string | null, url: string | null } | null> | null } | null };
+
+export type GetAnimeReviewsQueryVariables = Exact<{
+  id: number;
+  page?: number | null | undefined;
+  perPage?: number | null | undefined;
+  sort?: Array<ReviewSort | null | undefined> | ReviewSort | null | undefined;
+}>;
+
+
+export type GetAnimeReviewsQuery = { Media: { id: number, isReviewBlocked: boolean | null, title: { romaji: string | null } | null, reviews: { pageInfo: { currentPage: number | null, hasNextPage: boolean | null, perPage: number | null } | null, nodes: Array<{ id: number, summary: string | null, body: string | null, score: number | null, rating: number | null, ratingAmount: number | null, createdAt: number, siteUrl: string | null, user: { name: string, avatar: { large: string | null } | null } | null } | null> | null } | null } | null };

@@ -5,11 +5,18 @@ import type {
   GetAnimeQueryVariables,
   GetAnimesQuery,
   GetAnimesQueryVariables,
+  GetAnimeReviewsQuery,
+  GetAnimeReviewsQueryVariables,
   MediaFormat,
 } from "@/types/generated/graphql";
 
-import { AnimeListFetchError, AnimeNotFoundError } from "./AnimeErrors";
-import { GET_ANIME, GET_ANIMES } from "./AnimeQueries";
+import {
+  AnimeListFetchError,
+  AnimeNotFoundError,
+  AnimeReviewsFetchError,
+} from "./AnimeErrors";
+import { GET_ANIME, GET_ANIMES, GET_ANIME_REVIEWS } from "./AnimeQueries";
+import type { AnimeReviewSort } from "@/types/anime/reviewSort";
 
 /** AniList `Page` payload returned by {@link AnimeService.getAnimes}. */
 export type AnimeListPage = NonNullable<GetAnimesQuery["Page"]>;
@@ -26,6 +33,32 @@ export type AnimeDetail = NonNullable<GetAnimeQuery["Media"]>;
 export type AnimeRelationEdge = NonNullable<
   NonNullable<NonNullable<AnimeDetail["relations"]>["edges"]>[number]
 >;
+
+/** Paginated reviews payload returned by {@link AnimeService.getReviewsPage}. */
+export type AnimeReviewsPage = {
+  id: number;
+  title: string | null;
+  isReviewBlocked: boolean | null;
+  pageInfo: NonNullable<
+    NonNullable<GetAnimeReviewsQuery["Media"]>["reviews"]
+  >["pageInfo"];
+  reviews: AnimeReview[];
+};
+
+/** Single review within a paginated reviews response. */
+export type AnimeReview = NonNullable<
+  NonNullable<
+    NonNullable<NonNullable<GetAnimeReviewsQuery["Media"]>["reviews"]>["nodes"]
+  >[number]
+>;
+
+/** Filters and pagination options for {@link AnimeService.getReviewsPage}. */
+export interface GetAnimeReviewsParams {
+  animeId: number;
+  page?: number;
+  perPage?: number;
+  sort?: AnimeReviewSort;
+}
 
 /** Filters and pagination options for {@link AnimeService.getAnimes}. */
 export interface GetAnimeListParams {
@@ -109,6 +142,52 @@ export class AnimeService {
     }
 
     return data.Media;
+  }
+
+  /**
+   * Fetches a paginated list of community reviews for an anime.
+   *
+   * @throws {AnimeNotFoundError} When no anime exists for the given ID.
+   * @throws {AnimeReviewsFetchError} When the API response contains no reviews data.
+   */
+  async getReviewsPage({
+    animeId,
+    page = 1,
+    perPage = 10,
+    sort = "RATING_DESC",
+  }: GetAnimeReviewsParams): Promise<AnimeReviewsPage> {
+    const variables: GetAnimeReviewsQueryVariables = {
+      id: animeId,
+      page,
+      perPage,
+      sort: [sort],
+    };
+
+    const data = await this.api.request<
+      GetAnimeReviewsQuery,
+      GetAnimeReviewsQueryVariables
+    >(GET_ANIME_REVIEWS, variables);
+
+    if (!data.Media) {
+      throw new AnimeNotFoundError(animeId);
+    }
+
+    if (!data.Media.reviews) {
+      throw new AnimeReviewsFetchError(animeId, page);
+    }
+
+    const reviews =
+      data.Media.reviews.nodes?.filter(
+        (review): review is AnimeReview => review != null
+      ) ?? [];
+
+    return {
+      id: data.Media.id,
+      title: data.Media.title?.romaji ?? null,
+      isReviewBlocked: data.Media.isReviewBlocked ?? null,
+      pageInfo: data.Media.reviews.pageInfo,
+      reviews,
+    };
   }
 }
 

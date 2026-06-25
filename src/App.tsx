@@ -2,7 +2,9 @@ import { RouterProvider } from "react-router-dom";
 import { Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
-import { ThemeProvider, TooltipProvider, Loader } from "@/components";
+import { Loader } from "@/components/Loader";
+import { ThemeProvider } from "@/components/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import router from "@/router";
 
 const queryClient = new QueryClient({

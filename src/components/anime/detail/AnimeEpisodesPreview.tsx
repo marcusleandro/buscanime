@@ -1,12 +1,11 @@
-import { ArrowRightIcon, ExternalLinkIcon, PlayIcon } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button, Card, CardTitle } from "@/components";
+import { ExternalLinkIcon, PlayIcon } from "lucide-react";
+import { Card, CardTitle } from "@/components";
 import type { AnimeDetail } from "@/services/anime";
 import { formatDuration, formatEpisodeCount } from "@/utils/formatAnimeLabels";
+import { isSafeHttpUrl } from "@/utils/isSafeHttpUrl";
 import { cn } from "@/lib/utils";
 
 interface AnimeEpisodesPreviewProps {
-  animeId: number;
   episodes: AnimeDetail["episodes"];
   duration: AnimeDetail["duration"];
   streamingEpisodes: AnimeDetail["streamingEpisodes"];
@@ -15,7 +14,6 @@ interface AnimeEpisodesPreviewProps {
 const PREVIEW_COUNT = 6;
 
 export const AnimeEpisodesPreview = ({
-  animeId,
   episodes,
   duration,
   streamingEpisodes,
@@ -63,18 +61,20 @@ export const AnimeEpisodesPreview = ({
             {duration ? ` · ${formatDuration(duration)}` : ""}
           </p>
         </div>
+        {/* 
         <Button asChild variant="outline" size="sm">
           <Link to={`/animes/${animeId}/episodes`}>
             Ver todos
             <ArrowRightIcon data-icon="inline-end" />
           </Link>
-        </Button>
+        </Button> 
+        */}
       </div>
 
       {previewItems.length > 0 ? (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           {previewItems.map((item) =>
-            item.isExternal && item.url ? (
+            item.isExternal && item.url && isSafeHttpUrl(item.url) ? (
               <a
                 key={item.key}
                 href={item.url}

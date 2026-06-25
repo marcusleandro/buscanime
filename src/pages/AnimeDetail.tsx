@@ -6,6 +6,7 @@ import {
   AnimeDetailSynopsis,
   AnimeEpisodesPreview,
   AnimeRelatedSection,
+  AnimeReviewsSection,
   Button,
   ErrorState,
   PageContainer,
@@ -50,8 +51,8 @@ export const AnimeDetail = () => {
         <div className="flex flex-col gap-10">
           <AnimeDetailHero anime={data} />
           <AnimeDetailSynopsis description={data.description} />
+          <AnimeReviewsSection animeId={data.id} />
           <AnimeEpisodesPreview
-            animeId={data.id}
             episodes={data.episodes}
             duration={data.duration}
             streamingEpisodes={data.streamingEpisodes}

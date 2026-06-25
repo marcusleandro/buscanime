@@ -1,12 +1,13 @@
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
-import { ErrorState, PageContainer } from "@/components";
-import { NotFound } from "@/pages/NotFound";
+import { ErrorState } from "@/components/common/ErrorState";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { NotFoundContent } from "./NotFoundContent";
 
 export const RootErrorBoundary = () => {
   const error = useRouteError();
 
   if (isRouteErrorResponse(error) && error.status === 404) {
-    return <NotFound />;
+    return <NotFoundContent />;
   }
 
   const message =

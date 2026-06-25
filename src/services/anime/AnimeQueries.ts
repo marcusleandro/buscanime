@@ -99,3 +99,43 @@ export const GET_ANIME = gql`
     }
   }
 `;
+
+export const GET_ANIME_REVIEWS = gql`
+  query GetAnimeReviews(
+    $id: Int!
+    $page: Int
+    $perPage: Int
+    $sort: [ReviewSort]
+  ) {
+    Media(id: $id, type: ANIME) {
+      id
+      title {
+        romaji
+      }
+      isReviewBlocked
+      reviews(page: $page, perPage: $perPage, sort: $sort) {
+        pageInfo {
+          currentPage
+          hasNextPage
+          perPage
+        }
+        nodes {
+          id
+          summary
+          body(asHtml: true)
+          score
+          rating
+          ratingAmount
+          createdAt
+          siteUrl
+          user {
+            name
+            avatar {
+              large
+            }
+          }
+        }
+      }
+    }
+  }
+`;

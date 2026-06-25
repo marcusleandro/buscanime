@@ -1,4 +1,5 @@
 import type { AnimeDetail } from "@/services/anime";
+import { sanitizeAnilistHtml } from "@/utils";
 
 interface AnimeDetailSynopsisProps {
   description: AnimeDetail["description"];
@@ -25,7 +26,7 @@ export const AnimeDetailSynopsis = ({
       </h2>
       <div
         className="max-w-none space-y-3 text-foreground leading-relaxed [&_br]:block [&_i]:text-muted-foreground [&_p]:text-sm [&_p]:leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: description }}
+        dangerouslySetInnerHTML={{ __html: sanitizeAnilistHtml(description) }}
       />
     </section>
   );

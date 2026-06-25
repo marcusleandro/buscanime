@@ -1,12 +1,25 @@
 import { lazy, createElement } from "react";
-import { createBrowserRouter, data, Outlet } from "react-router-dom";
+import {
+  createBrowserRouter,
+  data,
+  Outlet,
+  type LoaderFunctionArgs,
+} from "react-router-dom";
 import { RootErrorBoundary } from "@/components/common";
+import { NotFound } from "@/pages/NotFound";
 import { isValidAnimeIdParam } from "@/utils/animeId";
 
 const Home = lazy(() => import("@/pages/Home"));
 const AnimeList = lazy(() => import("@/pages/AnimeList"));
 const AnimeDetail = lazy(() => import("@/pages/AnimeDetail"));
-const NotFound = lazy(() => import("@/pages/NotFound"));
+const AnimeReviews = lazy(() => import("@/pages/AnimeReviews"));
+
+const validateAnimeIdLoader = ({ params }: LoaderFunctionArgs) => {
+  if (!isValidAnimeIdParam(params.id)) {
+    throw data(null, { status: 404 });
+  }
+  return null;
+};
 
 const router = createBrowserRouter([
   {
@@ -23,25 +36,14 @@ const router = createBrowserRouter([
       },
       {
         path: "animes/:id",
-        loader: ({ params }) => {
-          if (!isValidAnimeIdParam(params.id)) {
-            throw data(null, { status: 404 });
-          }
-          return null;
-        },
+        loader: validateAnimeIdLoader,
         element: createElement(AnimeDetail),
       },
-      // TODO: Add episodes and reviews pages
-      // {
-      //   path: "animes/:id/episodes",
-      //   loader: ({ params }) => {
-      //     if (!isValidAnimeIdParam(params.id)) {
-      //       throw data(null, { status: 404 });
-      //     }
-      //     return null;
-      //   },
-      //   element: createElement(AnimeEpisodesPage),
-      // },
+      {
+        path: "animes/:id/reviews",
+        loader: validateAnimeIdLoader,
+        element: createElement(AnimeReviews),
+      },
       {
         path: "*",
         element: createElement(NotFound),

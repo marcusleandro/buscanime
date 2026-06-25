@@ -8,7 +8,6 @@ describe("AnimeEpisodesPreview", () => {
     render(
       <MemoryRouter>
         <AnimeEpisodesPreview
-          animeId={20}
           episodes={220}
           duration={24}
           streamingEpisodes={[
@@ -26,17 +25,13 @@ describe("AnimeEpisodesPreview", () => {
     expect(screen.getByRole("heading", { name: "Episódios" })).toBeInTheDocument();
     expect(screen.getByText(/220 episódios/)).toBeInTheDocument();
     expect(screen.getByText("Enter: Naruto Uzumaki!")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Ver todos" })).toHaveAttribute(
-      "href",
-      "/animes/20/episodes"
-    );
+    expect(screen.queryByRole("link", { name: "Ver todos" })).not.toBeInTheDocument();
   });
 
   it("renders numbered placeholders when streaming episodes are unavailable", () => {
     render(
       <MemoryRouter>
         <AnimeEpisodesPreview
-          animeId={1}
           episodes={12}
           duration={24}
           streamingEpisodes={[]}
@@ -53,7 +48,6 @@ describe("AnimeEpisodesPreview", () => {
     const { container } = render(
       <MemoryRouter>
         <AnimeEpisodesPreview
-          animeId={1}
           episodes={null}
           duration={null}
           streamingEpisodes={[]}
