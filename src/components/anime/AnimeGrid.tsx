@@ -60,9 +60,9 @@ export const AnimeGrid = ({
             className="h-12 w-full rounded-lg text-xl font-semibold"
           >
             {isFetchingNextPage ? (
-              <Spinner data-icon="inline-start" />
+              <Spinner data-icon="inline-start" className="mr-2 size-5" />
             ) : (
-              <PlusIcon data-icon="inline-start" />
+              <PlusIcon data-icon="inline-start" className="mr-2 size-5" />
             )}
             Ver mais
           </Button>
